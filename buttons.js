@@ -95,6 +95,7 @@ let startPlayerDie = {
 function calculateProbabilitySurvive() {
 	let numerator = 1;
 	let denominator = 1;
+	
 	for(let i = 0; i < dice.length; i++) {
 		for(let diceIterator = 0; diceIterator < dice[i].count; diceIterator++) {
 			numerator *= dice[i].blanks;
@@ -115,10 +116,12 @@ function complementRulePercent(value) {
 	return (1 - value) * 100;
 } 
 
+// https://github.com/DPsmith14/DPsmith14.github.io.git
+
 function computeResultButton() {
 	let percentSurvive = calculateProbabilitySurvive();
 	let resultBox = document.getElementById("result");
-	resultBox.innerText = percentSurvive.toFixed(2);
+	resultBox.innerText = percentSurvive.toFixed(2) + "%";
 }
 
 function createDiceCounters() {
