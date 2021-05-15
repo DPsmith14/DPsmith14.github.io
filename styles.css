@@ -1,6 +1,57 @@
-.button {
+body {
+	font-family: monospace;
+	font-weight: bold;
+	font-size: 24px;
+}
+
+#container {
+	display: flex;
+}
+
+.col {
+	flex-direction: column;
+}
+
+.row {
+	flex-direction: row;
+	justify-content: space-around;
+	text-align: center;
+}
+
+#dice-counters {
+	display: flex;
+}
+
+#result-container {
+	display: flex;
+	justify-content: space-around;
+}
+
+.cubes {
+	display: flex;
+    align-items: center;
+    justify-content: center;
+	width: 50px;
+	height: 50px;
+	font-size: 20px;
+	font-weight: bold;
+	font-family: monospace;
 	background-color:darkgray;
+}
+
+.dice-box {
+	border: dashed black 2px;
+	opacity: 90%;
+}
+
+.button {
 	color: white;
+	border: solid black 2px;
+}
+
+#result {
+	height: 150px;
+	width: 150px;
 	border: solid black 2px;
 }
 
