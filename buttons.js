@@ -1,5 +1,5 @@
 const NUM_DICE_FACES = 6;
-
+let computeButton;
 let dice = [
 			{
 				color: 'lightgray',
@@ -93,14 +93,33 @@ let startPlayerDie = {
 };
 
 function calculateProbabilitySurvive() {
+	let numerator = 1;
+	let denominator = 1;
 	for(let i = 0; i < dice.length; i++) {
-
+		for(let diceIterator = 0; diceIterator < dice[i].count; diceIterator++) {
+			numerator *= dice[i].blanks;
+			denominator *= NUM_DICE_FACES;
+		}
 	}
+
+	// check for start player die
+	if(startPlayerDie.active) {
+		numerator *= startPlayerDie.blanks;
+		denominator *= NUM_DICE_FACES;
+	}
+	let probabilityBust = numerator / denominator;
+	return complementRulePercent(probabilityBust);
 }
 
 function complementRulePercent(value) {
 	return (1 - value) * 100;
 } 
+
+function computeResultButton() {
+	let percentSurvive = calculateProbabilitySurvive();
+	let resultBox = document.getElementById("result");
+	resultBox.innerText = percentSurvive.toFixed(2);
+}
 
 function createDiceCounters() {
 	for(let i = 0; i < dice.length; i++) {
@@ -136,6 +155,11 @@ function makeDiceCounter(dice) {
 	incrementButton.innerText = "+";
 	incrementButton.onclick = function() {
 		// maybe have some kind of visual effect as well
+		if(computeButton.onclick === null) {
+			computeButton.onclick = computeResultButton;
+			computeButton.classList.remove("disabled");
+		}
+
 		dice.count++;
 		diceBox.innerText = dice.count;
 		decrementButton.classList.remove("disabled");
@@ -210,6 +234,10 @@ function configureStartCounter(counterNode) {
 
 document.addEventListener('DOMContentLoaded', function(event) {
 	//the event occurred
+	computeButton = document.getElementById("compute-result");
+	computeButton.onclick = null;
+	computeButton.classList.add("disabled");
+
 	createDiceCounters();
 })
 
