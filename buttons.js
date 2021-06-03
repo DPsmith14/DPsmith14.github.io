@@ -92,6 +92,18 @@ let startPlayerDie = {
 	active: false,
 };
 
+function atLeastOneDieActive() {
+	let oneDieIsActive = false;
+
+	for(let i = 0; i < dice.length; i++) {
+		oneDieIsActive = oneDieIsActive || dice[i].count;
+	}
+
+	oneDieIsActive = oneDieIsActive || startPlayerDie.active;
+
+	return oneDieIsActive;
+}
+
 function calculateProbabilitySurvive() {
 	let numerator = 1;
 	let denominator = 1;
@@ -118,10 +130,14 @@ function complementRulePercent(value) {
 
 // https://github.com/DPsmith14/DPsmith14.github.io.git
 
-function computeResultButton() {
-	let percentSurvive = calculateProbabilitySurvive();
+function computeResult() {
 	let resultBox = document.getElementById("result");
-	resultBox.innerText = percentSurvive.toFixed(2) + "%";
+	if(atLeastOneDieActive()) {
+		let percentSurvive = calculateProbabilitySurvive();
+		resultBox.innerText = percentSurvive.toFixed(2) + "%";
+	} else {
+		resultBox.innerText = "No dice selected, you must have at least one die selected for this to work.";
+	}
 }
 
 function createDiceCounters() {
@@ -156,16 +172,14 @@ function makeDiceCounter(dice) {
 	incrementButton.classList.add("button");
 	incrementButton.classList.add("cubes");
 	incrementButton.innerText = "+";
-	incrementButton.onclick = function() {
-		// maybe have some kind of visual effect as well
-		if(computeButton.onclick === null) {
-			computeButton.onclick = computeResultButton;
-			computeButton.classList.remove("disabled");
-		}
 
+	// set the function for the increment button
+	incrementButton.onclick = function() {
 		dice.count++;
 		diceBox.innerText = dice.count;
 		decrementButton.classList.remove("disabled");
+
+		computeResult();
 	}
 	
 	// button to decrement the count of the dice
@@ -186,6 +200,8 @@ function makeDiceCounter(dice) {
 			decrementButton.classList.remove("disabled");
 		}
 		diceBox.innerText = dice.count;
+		
+		computeResult();
 	}
 
 	// add the buttons, and diceBox to the container div
@@ -204,7 +220,7 @@ function configureStartCounter(counterNode) {
 	let noButton = counterNode.children[2];
 	diceBox.innerHTML = "&#10006;";
 
-	diceBox.style.color = "white";
+	diceBox.style.color = startPlayerDie.textColor;
 
 	yesFunction = function() {
 		startPlayerDie.active = true;
@@ -215,6 +231,8 @@ function configureStartCounter(counterNode) {
 		// change style of buttons
 		yesButton.classList.add("disabled");
 		noButton.classList.remove("disabled");
+
+		computeResult();
 	};
 
 	noFunction = function() {
@@ -226,6 +244,8 @@ function configureStartCounter(counterNode) {
 		// change style of buttons
 		noButton.classList.add("disabled");
 		yesButton.classList.remove("disabled");
+		
+		computeResult();
 	};
 
 	yesButton.innerText = "Yes";
@@ -237,9 +257,6 @@ function configureStartCounter(counterNode) {
 
 document.addEventListener('DOMContentLoaded', function(event) {
 	//the event occurred
-	computeButton = document.getElementById("compute-result");
-	computeButton.onclick = null;
-	computeButton.classList.add("disabled");
 
 	createDiceCounters();
 })
